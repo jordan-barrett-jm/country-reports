@@ -6,11 +6,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def plotIndicators(indicators):
+    #specify indicators that should be dislpayed as bar vs line plots
+    bar_indicators = ['Population', 'Total Exports (US $)', 'Total Imports (US $)']
+    line_indicators = ['Urban Population (%)', 'GDP (US $)',
+                        'GDP per capita (US $)', 'Trade (% of GDP)',
+                        'Arable Land (% land area)', 'Land Area (sq. km)']
     for indicator in indicators:
         x = [int(item[0]) for item in indicator['yearlyData'] if item[1]]
         y = [float(item[1]) for item in indicator['yearlyData'] if item[1]]
         fig, ax = plt.subplots()
-        plt.bar(x, y)
+        if (indicator['name'] in bar_indicators):
+            plt.bar(x, y)
+        else:
+            plt.plot(x,y)
         # after plotting the data, format the labels
         current_values = plt.gca().get_yticks()
         plt.gca().set_yticklabels(['{:,.0f}'.format(x) for x in current_values])

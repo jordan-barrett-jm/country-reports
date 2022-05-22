@@ -14,8 +14,8 @@ def fetchWBIndicatorData(countryCode):
         {"name":"Urban Population (%)", "WB_name": "SP.URB.TOTL.IN.ZS", "yearlyData": []},
         {"name":"GDP (US $)", "WB_name": "NY.GDP.MKTP.CD", "yearlyData": []},
         {"name":"GDP per capita (US $)", "WB_name": "NY.GDP.PCAP.CD", "yearlyData": []},
-        {"name":"Total Exports", "WB_name": "NE.EXP.GNFS.CD", "yearlyData": []},
-        {"name":"Total Imports", "WB_name": "NE.IMP.GNFS.CD", "yearlyData": []},
+        {"name":"Total Exports (US $)", "WB_name": "NE.EXP.GNFS.CD", "yearlyData": []},
+        {"name":"Total Imports (US $)", "WB_name": "NE.IMP.GNFS.CD", "yearlyData": []},
         {"name":"Trade (% of GDP)", "WB_name": "NE.TRD.GNFS.ZS", "yearlyData": []},
         {"name":"Land Area (sq. km)", "WB_name": "AG.LND.TOTL.K2", "yearlyData": []},
         {"name":"Arable Land (% land area)", "WB_name": "AG.LND.ARBL.ZS", "yearlyData": []}
