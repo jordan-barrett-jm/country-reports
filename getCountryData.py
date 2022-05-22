@@ -11,8 +11,8 @@ def fetchWBIndicatorData(countryCode):
     indicators = [
         {"name":"Population", "WB_name": "SP.POP.TOTL", "yearlyData": []},
         {"name":"Urban Population (%)", "WB_name": "SP.URB.TOTL.IN.ZS", "yearlyData": []},
-        {"name":"GDP", "WB_name": "NY.GDP.MKTP.CD", "yearlyData": []},
-        {"name":"GDP per capita", "WB_name": "NY.GDP.PCAP.CD", "yearlyData": []},
+        {"name":"GDP (US $)", "WB_name": "NY.GDP.MKTP.CD", "yearlyData": []},
+        {"name":"GDP per capita (US $)", "WB_name": "NY.GDP.PCAP.CD", "yearlyData": []},
         {"name":"Total Exports", "WB_name": "NE.EXP.GNFS.CD", "yearlyData": []},
         {"name":"Total Imports", "WB_name": "NE.IMP.GNFS.CD", "yearlyData": []},
         {"name":"Trade (% of GDP)", "WB_name": "NE.TRD.GNFS.ZS", "yearlyData": []},
@@ -138,5 +138,3 @@ def getTwoLetterCode(countryName):
     codes = pd.read_csv("country_codes.csv")
     twoLetterCode = codes[codes["Country"]==countryName]['Alpha-2 code'].values[0]
     return twoLetterCode
-
-getTwoLetterCode("Jamaica")

@@ -93,9 +93,16 @@ def plotTradeCommodities(tradeData):
         st.pyplot(fig)
 
 def showCountryDetails(country_details):
-    st.write(country_details)
+    country_details = country_details[0]
+    st.subheader(country_details['name'])
+    st.write(f"Region: {country_details['region']['value']}")
+    st.write(f"Income Level: {country_details['incomeLevel']['value']}")
+    st.write(f"Latitude: {country_details['latitude']}")
+    st.write(f"Longitude: {country_details['longitude']}")
+    st.write(f"Capital: {country_details['capitalCity']}")
 
-#button to show country codes
+st.title("Country Report")
+#select box for countries
 countryList = getCountryCodes()['Country']
 selectedCountry = st.selectbox(
      'Select a country to view its economic/geographic report',
