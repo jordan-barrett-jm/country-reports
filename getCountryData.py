@@ -32,16 +32,17 @@ def fetchWBIndicatorData(countryCode):
             print (e)
     return indicators
 
-#fetches the capital of the given country using its
+#fetches the Country details using the
 #2-letter ISO country code from the WB Country API
-def fetchWBCapital(countryCode):
+def fetchWBCountry(countryCode):
     req_URL  = f"https://api.worldbank.org/v2/country/{countryCode}?format=json"
     try:
         res = requests.get(req_URL).json()
-        capital = res[0]['capitalCity']
+        countryDetails = res[1]
     except Exception as e:
         print (e)
-    return capital
+        return {}
+    return countryDetails
 
 #get ISO numeric country code from ISO 2-letter country code
 def getNumericCode(countryCode):
@@ -132,3 +133,10 @@ def getTopNTradeFlowPartners(tradeDF, tradeFlow, n):
 def getCountryCodes():
     codes = pd.read_csv("country_codes.csv")
     return codes[["Country", "Alpha-2 code"]]
+
+def getTwoLetterCode(countryName):
+    codes = pd.read_csv("country_codes.csv")
+    twoLetterCode = codes[codes["Country"]==countryName]['Alpha-2 code'].values[0]
+    return twoLetterCode
+
+getTwoLetterCode("Jamaica")
