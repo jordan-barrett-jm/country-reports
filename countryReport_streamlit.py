@@ -94,7 +94,9 @@ def plotTradeCommodities(tradeData):
     st.pyplot(fig)
 
 
-
+#button to show country codes
+if st.button("Show country codes"):
+    st.write(getCountryCodes())
 st.header("Indicator Plots")
 plotIndicators(country_indicators)
 st.header("Trade Data - Top 5 Import and Export Commodities")

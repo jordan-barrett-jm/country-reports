@@ -128,3 +128,7 @@ def getTopNTradeFlowPartners(tradeDF, tradeFlow, n):
                             (tradeDF["Partner"] != "World")]
     top_n_partners = flow_partners.nlargest(n, 'Trade Value (US$)')
     return top_n_partners[["Trade Flow","Year","Partner","Trade Value (US$)"]]
+
+def getCountryCodes():
+    codes = pd.read_csv("country_codes.csv")
+    return codes[["Country", "Alpha-2 code"]]
