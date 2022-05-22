@@ -123,12 +123,9 @@ if st.button("Show Report"):
     plotTradeCommodities(trade_commodities)
     #trade partner details
     trade_partners = getTopTradePartners(countryCode)
-    st.header("Trade Data - Top 5 Import and Export Commodities")
-    plotTradeCommodities(trade_commodities)
-    #trade commodity details
-    
-    
-    
-    
     st.header("Trade Data - Top 5 Import and Export Partners")
     plotTradePartners(trade_partners)
+st.subheader("Sources")
+st.write("""UN ComTrade Database: https://comtrade.un.org/\n 
+WorldBank Databank: https://databank.worldbank.org/home.aspx
+""")
