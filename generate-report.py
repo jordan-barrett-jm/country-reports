@@ -1,6 +1,8 @@
+from sqlite3 import paramstyle
 import requests
 import json
 import pandas as pd
+import io
 
 #this function accepts a country's two-letter ISO code and 
 #returns indicator data from the World Bank Indicators API
@@ -51,5 +53,44 @@ def getNumericCode(countryCode):
         print (e)
     return numeric_code
 
-getNumericCode("JM")
+#Using the UN ComTrade API, retrieve the top products via export and import
+#categorized using the 2-digit HS code
+#link to documentation on ComTrade API --> https://comtrade.un.org/data/doc/api/#DataRequests
+def getTopTradeProducts(countryCode):
+    #this dictionary should be populated with pandas dataframes of exports and imports
+    tradeProducts = {
+        'exports': None,
+        'imports': None
+    }
+    numericCode = getNumericCode(countryCode)
+    params = {
+        'type': 'C',
+        'freq':'A',
+        'px':'HS',
+        'r': numericCode,
+        'p': 0,
+        'cc': 'AG2',
+        'ps': 2020,
+        'fmt': 'csv'
+    }
+    req_URL = "https://comtrade.un.org/api/get"
+    try:
+        #get raw CSV data from API endpoint
+        urlData = requests.get(req_URL, params=params).content
+        #convert data into pandas dataframe
+        tradeData = pd.read_csv(io.StringIO(urlData.decode('utf-8')))
+        #get top commodity imports
+        tradeProducts['imports'] = getTopNTradeFlowProducts(tradeData, "Import", 5)
+        #get top commodity exports
+        tradeProducts['exports'] = getTopNTradeFlowProducts(tradeData, "Export", 5)
+    except Exception as e:
+        print (e)
+    return tradeProducts
 
+def getTopNTradeFlowProducts(tradeDF, tradeFlow, n):
+    flow_commodities = tradeDF[tradeDF["Trade Flow"] == tradeFlow]
+    top_n_commodities = flow_commodities.nlargest(n, 'Trade Value (US$)')
+    return top_n_commodities[["Year","Classification","Commodity", "Trade Value (US$)"]]
+
+
+getTopTradeProducts("JM")
