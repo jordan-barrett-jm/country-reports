@@ -16,7 +16,6 @@ def fetchWBIndicatorData(countryCode):
         {"name":"Total Exports", "WB_name": "NE.EXP.GNFS.CD", "yearlyData": []},
         {"name":"Total Imports", "WB_name": "NE.IMP.GNFS.CD", "yearlyData": []},
         {"name":"Trade (% of GDP)", "WB_name": "NE.TRD.GNFS.ZS", "yearlyData": []},
-        {"name":"Population", "WB_name": "SP.POP.TOTL", "yearlyData": []},
         {"name":"Land Area (sq. km)", "WB_name": "AG.LND.TOTL.K2", "yearlyData": []},
         {"name":"Arable Land (% land area)", "WB_name": "AG.LND.ARBL.ZS", "yearlyData": []}
     ]
@@ -128,5 +127,3 @@ def getTopNTradeFlowPartners(tradeDF, tradeFlow, n):
                             (tradeDF["Partner"] != "World")]
     top_n_partners = flow_partners.nlargest(n, 'Trade Value (US$)')
     return top_n_partners[["Trade Flow","Year","Partner","Trade Value (US$)"]]
-
-getTopTradePartners("JM")
