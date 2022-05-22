@@ -50,6 +50,7 @@ def getNumericCode(countryCode):
         numeric_code = codes[codes['Alpha-2 code'] == countryCode]['Numeric'].values[0]
     except Exception as e:
         print (e)
+        return None
     return numeric_code
 
 #Using the UN ComTrade API, retrieve the top products via export and import
