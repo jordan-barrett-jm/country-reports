@@ -109,16 +109,26 @@ selectedCountry = st.selectbox(
      countryList)
 countryCode = getTwoLetterCode(selectedCountry)
 if st.button("Show Report"):
-    country_indicators = fetchWBIndicatorData(countryCode)
-    trade_partners = getTopTradePartners(countryCode)
-    trade_commodities = getTopTradeProducts(countryCode)
+    #country details
     country_details = fetchWBCountry(countryCode)
-
     st.header("Country Details")
     showCountryDetails(country_details)
-    st.header("Indicator Plots")
+    #country socio-economic indicators
+    country_indicators = fetchWBIndicatorData(countryCode)
+    st.header("Socio-Economic Indicators")
     plotIndicators(country_indicators)
+    #trade commodity details
+    trade_commodities = getTopTradeProducts(countryCode)
     st.header("Trade Data - Top 5 Import and Export Commodities")
     plotTradeCommodities(trade_commodities)
+    #trade partner details
+    trade_partners = getTopTradePartners(countryCode)
+    st.header("Trade Data - Top 5 Import and Export Commodities")
+    plotTradeCommodities(trade_commodities)
+    #trade commodity details
+    
+    
+    
+    
     st.header("Trade Data - Top 5 Import and Export Partners")
     plotTradePartners(trade_partners)

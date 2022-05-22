@@ -3,6 +3,7 @@ import requests
 import json
 import pandas as pd
 import io
+import datetime
 
 #this function accepts a country's two-letter ISO code and 
 #returns indicator data from the World Bank Indicators API
@@ -58,6 +59,8 @@ def getNumericCode(countryCode):
 #categorized using the 2-digit HS code
 #link to documentation on ComTrade API --> https://comtrade.un.org/data/doc/api/#DataRequests
 def getTopTradeProducts(countryCode):
+    last_year = datetime.datetime.now().year - 1
+    trade_year = last_year
     #this dictionary should be populated with pandas dataframes of exports and imports
     tradeProducts = {
         'exports': None,
@@ -71,24 +74,34 @@ def getTopTradeProducts(countryCode):
         'r': numericCode,
         'p': 0,
         'cc': 'AG2',
-        'ps': 2020,
+        'ps': trade_year,
         'fmt': 'csv'
     }
     req_URL = "https://comtrade.un.org/api/get"
     try:
-        #get raw CSV data from API endpoint
-        urlData = requests.get(req_URL, params=params).content
-        #convert data into pandas dataframe
-        tradeData = pd.read_csv(io.StringIO(urlData.decode('utf-8')))
-        #get top commodity imports
-        tradeProducts['imports'] = getTopNTradeFlowProducts(tradeData, "Import", 5)
-        #get top commodity exports
-        tradeProducts['exports'] = getTopNTradeFlowProducts(tradeData, "Export", 5)
+        content_full = False
+        while ((trade_year > last_year - 5) and not(content_full)) :
+            #get raw CSV data from API endpoint
+            urlData = requests.get(req_URL, params=params).content
+            #convert data into pandas dataframe
+            tradeData = pd.read_csv(io.StringIO(urlData.decode('utf-8')))
+            if len(tradeData.index) > 1:
+                content_full = True
+            else:
+                trade_year -= 1
+                params['ps'] = trade_year
+        if content_full:
+            #get top commodity imports
+            tradeProducts['imports'] = getTopNTradeFlowProducts(tradeData, "Import", 5)
+            #get top commodity exports
+            tradeProducts['exports'] = getTopNTradeFlowProducts(tradeData, "Export", 5)
     except Exception as e:
         print (e)
     return tradeProducts
 
 def getTopTradePartners(countryCode):
+    last_year = datetime.datetime.now().year - 1
+    trade_year = last_year
     #this dictionary should be populated with pandas dataframes of exports and imports
     tradePartners = {
         'exports': None,
@@ -102,19 +115,27 @@ def getTopTradePartners(countryCode):
         'r': numericCode,
         'p': 'ALL',
         'cc': 'TOTAL',
-        'ps': 2020,
+        'ps': trade_year,
         'fmt': 'csv'
     }
     req_URL = "https://comtrade.un.org/api/get"
     try:
-        #get raw CSV data from API endpoint
-        urlData = requests.get(req_URL, params=params).content
-        #convert data into pandas dataframe
-        tradeData = pd.read_csv(io.StringIO(urlData.decode('utf-8')))
-        #get top import partners
-        tradePartners['imports'] = getTopNTradeFlowPartners(tradeData, "Import", 5)
-        #get top commodity exports
-        tradePartners['exports'] = getTopNTradeFlowPartners(tradeData, "Export", 5)
+        content_full = False
+        while ((trade_year > last_year - 5) and not(content_full)) :
+            #get raw CSV data from API endpoint
+            urlData = requests.get(req_URL, params=params).content
+            #convert data into pandas dataframe
+            tradeData = pd.read_csv(io.StringIO(urlData.decode('utf-8')))
+            if len(tradeData.index) > 1:
+                content_full = True
+            else:
+                trade_year -= 1
+                params['ps'] = trade_year
+        if content_full:
+            #get top import partners
+            tradePartners['imports'] = getTopNTradeFlowPartners(tradeData, "Import", 5)
+            #get top commodity exports
+            tradePartners['exports'] = getTopNTradeFlowPartners(tradeData, "Export", 5)
     except Exception as e:
         print (e)
     return tradePartners
@@ -138,3 +159,5 @@ def getTwoLetterCode(countryName):
     codes = pd.read_csv("country_codes.csv")
     twoLetterCode = codes[codes["Country"]==countryName]['Alpha-2 code'].values[0]
     return twoLetterCode
+
+getTopTradeProducts('CN')
