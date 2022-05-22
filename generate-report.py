@@ -87,10 +87,46 @@ def getTopTradeProducts(countryCode):
         print (e)
     return tradeProducts
 
+def getTopTradePartners(countryCode):
+    #this dictionary should be populated with pandas dataframes of exports and imports
+    tradePartners = {
+        'exports': None,
+        'imports': None
+    }
+    numericCode = getNumericCode(countryCode)
+    params = {
+        'type': 'C',
+        'freq':'A',
+        'px':'HS',
+        'r': numericCode,
+        'p': 'ALL',
+        'cc': 'TOTAL',
+        'ps': 2020,
+        'fmt': 'csv'
+    }
+    req_URL = "https://comtrade.un.org/api/get"
+    try:
+        #get raw CSV data from API endpoint
+        urlData = requests.get(req_URL, params=params).content
+        #convert data into pandas dataframe
+        tradeData = pd.read_csv(io.StringIO(urlData.decode('utf-8')))
+        #get top import partners
+        tradePartners['imports'] = getTopNTradeFlowPartners(tradeData, "Import", 5)
+        #get top commodity exports
+        tradePartners['exports'] = getTopNTradeFlowPartners(tradeData, "Export", 5)
+    except Exception as e:
+        print (e)
+    return tradePartners
+
 def getTopNTradeFlowProducts(tradeDF, tradeFlow, n):
     flow_commodities = tradeDF[tradeDF["Trade Flow"] == tradeFlow]
     top_n_commodities = flow_commodities.nlargest(n, 'Trade Value (US$)')
-    return top_n_commodities[["Year","Classification","Commodity", "Trade Value (US$)"]]
+    return top_n_commodities[["Trade Flow","Year","Classification","Commodity","Trade Value (US$)"]]
 
+def getTopNTradeFlowPartners(tradeDF, tradeFlow, n):
+    flow_partners = tradeDF[(tradeDF["Trade Flow"] == tradeFlow) &
+                            (tradeDF["Partner"] != "World")]
+    top_n_partners = flow_partners.nlargest(n, 'Trade Value (US$)')
+    return top_n_partners[["Trade Flow","Year","Partner","Trade Value (US$)"]]
 
-getTopTradeProducts("JM")
+getTopTradePartners("JM")
