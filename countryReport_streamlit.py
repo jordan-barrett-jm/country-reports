@@ -125,7 +125,7 @@ if st.button("Show Report"):
     st.header("Country Details")
     showCountryDetails(country_details)
     #comparative statistics
-    comp_stats = compareCountry(countryCode)
+    comp_stats = compareCountryParallel(countryCode)
     st.header("Comparative Statistics")
     showComparison(comp_stats)
     #country socio-economic indicators
