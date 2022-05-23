@@ -129,7 +129,7 @@ if st.button("Show Report"):
     st.header("Comparative Statistics")
     showComparison(comp_stats)
     #country socio-economic indicators
-    country_indicators = fetchWBIndicatorData(countryCode)
+    country_indicators = fetchWBIndicatorDataParallel(countryCode)
     st.header("Socio-Economic Indicators")
     plotIndicators(country_indicators)
     #trade commodity details

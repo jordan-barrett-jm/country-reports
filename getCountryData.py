@@ -234,7 +234,16 @@ def getTwoLetterCode(countryName):
 #multithreaded version of the compareCountry function
 def compareCountryParallel(countryCode):
     comp_lst = []
-    def fetchIndicatorDetails(indicator):
+    #These are country codes that denominate regions so they should be excluded from the comparison
+    invalid_codes = ['ZH', 'ZI', '1A', 'S3', 
+    'B8', 'V2', 'Z4', '4E', 'T4', 'XC', 'Z7',
+    '7E', 'T7', 'EU', 'F1', 'XE', 'XD', 'XF',
+    'ZT', 'XH', 'XI', 'XG', 'V3', 'ZJ', 'XJ',
+    'T2', 'XL', 'XO', 'XM', 'XN', 'ZQ', 'XQ', 
+    'T3', 'XP', 'XU', 'OE', 'S4', 'S2', 'V4', 
+    'V1', 'S1', '8S', 'T5', 'ZG', 'ZF', 
+    'T6', 'XT', '1W']
+    def fetchIndicatorCompDetails(indicator):
         last_year = datetime.datetime.now().year - 1
         comp_year = last_year
         indicator_name = indicator['name']
@@ -274,17 +283,7 @@ def compareCountryParallel(countryCode):
                 "Rank (positional)": country_indicator_df['Rank'].iloc[0], 
                 "Percentile": country_indicator_df['Percentile'].iloc[0]
             }
-            comp_lst.append(country_dict)
-        
-    #These are country codes that denominate regions so they should be excluded from the comparison
-    invalid_codes = ['ZH', 'ZI', '1A', 'S3', 
-    'B8', 'V2', 'Z4', '4E', 'T4', 'XC', 'Z7',
-    '7E', 'T7', 'EU', 'F1', 'XE', 'XD', 'XF',
-    'ZT', 'XH', 'XI', 'XG', 'V3', 'ZJ', 'XJ',
-    'T2', 'XL', 'XO', 'XM', 'XN', 'ZQ', 'XQ', 
-    'T3', 'XP', 'XU', 'OE', 'S4', 'S2', 'V4', 
-    'V1', 'S1', '8S', 'T5', 'ZG', 'ZF', 
-    'T6', 'XT', '1W']
+            comp_lst.append(country_dict)     
     indicators = [
         {"name":"Population", "WB_name": "SP.POP.TOTL"},
         {"name":"Urban Population (%)", "WB_name": "SP.URB.TOTL.IN.ZS"},
@@ -298,6 +297,38 @@ def compareCountryParallel(countryCode):
     ]
     with ThreadPoolExecutor() as ex:
         for indicator in indicators:
-            ex.submit(fetchIndicatorDetails, indicator)
+            ex.submit(fetchIndicatorCompDetails, indicator)
     comp_df = pd.DataFrame(comp_lst)
     return comp_df
+
+#parallelised version of the fetchWBIndicatorData function
+def fetchWBIndicatorDataParallel(countryCode):
+    indicator_data_lst = []
+    def getIndicatorData(indicator):
+        indicator_code = indicator["WB_name"]
+        req_URL = f"https://api.worldbank.org/v2/country/{countryCode}/indicator/{indicator_code}?format=json"
+        try:
+            res = requests.get(req_URL).json()
+            #put data for the last 10 years in a (year, value) tuple
+            yearly_data = [(val["date"], val["value"]) for val in res[1][:16]]
+            indicator["yearlyData"] = yearly_data
+            indicator_data_lst.append(indicator)
+        except Exception as e:
+            print (e)
+    #list of indicators, each of which the yearlyData should be populated
+    indicators = [
+        {"name":"Population", "WB_name": "SP.POP.TOTL"},
+        {"name":"Urban Population (%)", "WB_name": "SP.URB.TOTL.IN.ZS"},
+        {"name":"GDP (US $)", "WB_name": "NY.GDP.MKTP.CD"},
+        {"name":"GDP per capita (US $)", "WB_name": "NY.GDP.PCAP.CD"},
+        {"name":"Total Exports (US $)", "WB_name": "NE.EXP.GNFS.CD"},
+        {"name":"Total Imports (US $)", "WB_name": "NE.IMP.GNFS.CD"},
+        {"name":"Trade (% of GDP)", "WB_name": "NE.TRD.GNFS.ZS"},
+        {"name":"Land Area (sq. km)", "WB_name": "AG.LND.TOTL.K2"},
+        {"name":"Arable Land (% land area)", "WB_name": "AG.LND.ARBL.ZS"}
+    ]
+    #populate the yearlyData for each indicator
+    with ThreadPoolExecutor() as ex:
+        for indicator in indicators:
+            ex.submit(getIndicatorData, indicator)
+    return indicator_data_lst
