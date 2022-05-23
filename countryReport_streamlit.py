@@ -109,6 +109,9 @@ def showCountryDetails(country_details):
     st.write(f"Longitude: {country_details['longitude']}")
     st.write(f"Capital: {country_details['capitalCity']}")
 
+def showComparison(comp_details):
+    st.write(comp_details)
+
 st.title("Country Report")
 #select box for countries
 countryList = getCountryCodes()['Country']
@@ -121,6 +124,10 @@ if st.button("Show Report"):
     country_details = fetchWBCountry(countryCode)
     st.header("Country Details")
     showCountryDetails(country_details)
+    #comparative statistics
+    comp_stats = compareCountry(countryCode)
+    st.header("Comparative Statistics")
+    showComparison(comp_stats)
     #country socio-economic indicators
     country_indicators = fetchWBIndicatorData(countryCode)
     st.header("Socio-Economic Indicators")
