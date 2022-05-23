@@ -65,7 +65,7 @@ def compareCountry(countryCode):
         indicator_name = indicator['name']
         indicator_code = indicator['WB_name']
         value_filled = False
-        while (comp_year > last_year - 3) and not(value_filled):
+        while (comp_year >= last_year - 3) and not(value_filled):
             #get the indicator value for all countries
             req_URL = f"https://api.worldbank.org/v2/country/all/indicator/{indicator_code}?format=json&date={comp_year}&per_page=300"
             try:
