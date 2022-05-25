@@ -28,7 +28,7 @@ def fetchWBIndicatorData(countryCode):
         try:
             res = requests.get(req_URL).json()
             #put data for the last 10 years in a (year, value) tuple
-            yearly_data = [(val["date"], val["value"]) for val in res[1][:16]]
+            yearly_data = [(val["date"], val["value"]) for val in res[1]]
             indicators[i]["yearlyData"] = yearly_data
         except Exception as e:
             print (e)
@@ -310,7 +310,7 @@ def fetchWBIndicatorDataParallel(countryCode):
         try:
             res = requests.get(req_URL).json()
             #put data for the last 10 years in a (year, value) tuple
-            yearly_data = [(val["date"], val["value"]) for val in res[1][:16]]
+            yearly_data = [(val["date"], val["value"]) for val in res[1]]
             indicator["yearlyData"] = yearly_data
             indicator_data_lst.append(indicator)
         except Exception as e:

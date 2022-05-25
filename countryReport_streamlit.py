@@ -12,22 +12,23 @@ def plotIndicators(indicators):
                         'GDP per capita (US $)', 'Trade (% of GDP)',
                         'Arable Land (% land area)', 'Land Area (sq. km)']
     for indicator in indicators:
-        if [x[1] for x in indicator['yearlyData'] if x[1]]:
-            x = [int(item[0]) for item in indicator['yearlyData'] if item[1]]
-            y = [float(item[1]) for item in indicator['yearlyData'] if item[1]]
-            fig, ax = plt.subplots()
-            if (indicator['name'] in bar_indicators):
-                plt.bar(x, y)
-            else:
-                plt.plot(x,y)
-            # after plotting the data, format the labels
-            current_values = plt.gca().get_yticks()
-            plt.gca().set_yticklabels(['{:,.0f}'.format(x) for x in current_values])
-            plt.xticks(rotation=50, fontsize=13)
-            plt.xlabel('Year', fontsize=14)
-            plt.ylabel(indicator['name'], fontsize=14)
-            plt.title(indicator['name'], fontsize=16)
-            st.pyplot(fig)
+        if indicator['yearlyData']:
+            if [x[1] for x in indicator['yearlyData'] if x[1]]:
+                x = [int(item[0]) for item in indicator['yearlyData'] if item[1]]
+                y = [float(item[1]) for item in indicator['yearlyData'] if item[1]]
+                fig, ax = plt.subplots()
+                if (indicator['name'] in bar_indicators):
+                    plt.bar(x, y)
+                else:
+                    plt.plot(x,y)
+                # after plotting the data, format the labels
+                current_values = plt.gca().get_yticks()
+                plt.gca().set_yticklabels(['{:,.0f}'.format(x) for x in current_values])
+                plt.xticks(rotation=50, fontsize=13)
+                plt.xlabel('Year', fontsize=14)
+                plt.ylabel(indicator['name'], fontsize=14)
+                plt.title(indicator['name'], fontsize=16)
+                st.pyplot(fig)
 
 def plotTradePartners(tradeData):
     if len(tradeData['imports'].index) > 1:
