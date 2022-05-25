@@ -12,24 +12,25 @@ def plotIndicators(indicators):
                         'GDP per capita (US $)', 'Trade (% of GDP)',
                         'Arable Land (% land area)', 'Land Area (sq. km)']
     for indicator in indicators:
-        x = [int(item[0]) for item in indicator['yearlyData'] if item[1]]
-        y = [float(item[1]) for item in indicator['yearlyData'] if item[1]]
-        fig, ax = plt.subplots()
-        if (indicator['name'] in bar_indicators):
-            plt.bar(x, y)
-        else:
-            plt.plot(x,y)
-        # after plotting the data, format the labels
-        current_values = plt.gca().get_yticks()
-        plt.gca().set_yticklabels(['{:,.0f}'.format(x) for x in current_values])
-        plt.xticks(rotation=50, fontsize=13)
-        plt.xlabel('Year', fontsize=14)
-        plt.ylabel(indicator['name'], fontsize=14)
-        plt.title(indicator['name'], fontsize=16)
-        st.pyplot(fig)
+        if [x[1] for x in indicator['yearlyData'] if x[1]]:
+            x = [int(item[0]) for item in indicator['yearlyData'] if item[1]]
+            y = [float(item[1]) for item in indicator['yearlyData'] if item[1]]
+            fig, ax = plt.subplots()
+            if (indicator['name'] in bar_indicators):
+                plt.bar(x, y)
+            else:
+                plt.plot(x,y)
+            # after plotting the data, format the labels
+            current_values = plt.gca().get_yticks()
+            plt.gca().set_yticklabels(['{:,.0f}'.format(x) for x in current_values])
+            plt.xticks(rotation=50, fontsize=13)
+            plt.xlabel('Year', fontsize=14)
+            plt.ylabel(indicator['name'], fontsize=14)
+            plt.title(indicator['name'], fontsize=16)
+            st.pyplot(fig)
 
 def plotTradePartners(tradeData):
-    if tradeData['imports'] is not None:
+    if len(tradeData['imports'].index) > 1:
         st.subheader("Import Partners")
         st.write(tradeData['imports'])
         #plot import partners
@@ -46,7 +47,7 @@ def plotTradePartners(tradeData):
         plt.title('Top 5 Import Partners', fontsize=16)
         st.pyplot(fig)
     #plot export partners
-    if tradeData['exports'] is not None:
+    if len(tradeData['exports'].index) > 1:
         st.subheader("Export Partners")
         st.write(tradeData['exports'])
         st.write("Top 5 export partners")
@@ -63,7 +64,7 @@ def plotTradePartners(tradeData):
         st.pyplot(fig)
 
 def plotTradeCommodities(tradeData):
-    if tradeData['imports'] is not None:
+    if len(tradeData['imports'].index) > 1:
         st.subheader("Import Commodities")
         st.write(tradeData['imports'])
         #plot import products
@@ -82,7 +83,7 @@ def plotTradeCommodities(tradeData):
         plt.title('Top 5 Import Commodities', fontsize=16)
         st.pyplot(fig)
     #plot export products
-    if tradeData['exports'] is not None:
+    if len(tradeData['exports'].index):
         st.subheader("Export Commodities")
         st.write(tradeData['exports'])
         st.write("Top 5 export commodities")

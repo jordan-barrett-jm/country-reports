@@ -134,8 +134,8 @@ def getTopTradeProducts(countryCode):
     trade_year = last_year
     #this dictionary should be populated with pandas dataframes of exports and imports
     tradeProducts = {
-        'exports': None,
-        'imports': None
+        'exports': pd.DataFrame(),
+        'imports': pd.DataFrame()
     }
     numericCode = getNumericCode(countryCode)
     params = {
@@ -175,8 +175,8 @@ def getTopTradePartners(countryCode):
     trade_year = last_year
     #this dictionary should be populated with pandas dataframes of exports and imports
     tradePartners = {
-        'exports': None,
-        'imports': None
+        'exports': pd.DataFrame(),
+        'imports': pd.DataFrame()
     }
     numericCode = getNumericCode(countryCode)
     params = {
